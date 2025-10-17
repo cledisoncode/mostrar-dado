@@ -18,94 +18,223 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ESTILO DARK ---
-st.markdown("""
-    <style>
-        /* Fundo geral */
-        .stApp {
-            background-color: #0d1117;
-            color: #f0f0f0;
-            font-family: 'Segoe UI', sans-serif;
-        }
+# --- GERENCIAMENTO DE TEMA ---
+if 'tema' not in st.session_state:
+    st.session_state.tema = "escuro"
 
-        /* Sidebar */
-        section[data-testid="stSidebar"] {
-            background-color: #161b22 !important;
-            border-right: 1px solid #30363d;
-        }
+def alternar_tema():
+    if st.session_state.tema == "escuro":
+        st.session_state.tema = "claro"
+    else:
+        st.session_state.tema = "escuro"
 
-        /* Títulos */
-        h1, h2, h3, h4 {
-            color: #58a6ff !important;
-        }
+# --- ESTILOS DINÂMICOS ---
+if st.session_state.tema == "escuro":
+    st.markdown("""
+        <style>
+            /* Fundo geral */
+            .stApp {
+                background-color: #0d1117;
+                color: #f0f0f0;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 16px;
+            }
 
-        /* Texto padrão */
-        p, label, span, div {
-            color: #f0f0f0 !important;
-        }
+            /* Sidebar */
+            section[data-testid="stSidebar"] {
+                background-color: #161b22 !important;
+                border-right: 1px solid #30363d;
+            }
 
-        /* Tabelas */
-        .dataframe {
-            background-color: #161b22 !important;
-            color: #f0f0f0 !important;
-            border-radius: 10px;
-        }
+            /* Títulos */
+            h1, h2, h3, h4 {
+                color: #58a6ff !important;
+                font-size: 1.8em !important;
+            }
 
-        /* Botões */
-        div.stDownloadButton > button,
-        div.stButton > button {
-            background-color: #238636 !important;
-            color: white !important;
-            border-radius: 8px !important;
-            border: 1px solid #2ea043 !important;
-            padding: 0.6em 1.2em !important;
-            font-weight: 600;
-        }
+            h2 {
+                font-size: 1.6em !important;
+            }
 
-        div.stDownloadButton > button:hover,
-        div.stButton > button:hover {
-            background-color: #2ea043 !important;
-        }
+            h3 {
+                font-size: 1.4em !important;
+            }
 
-        /* Radio e Selectbox */
-        div[data-testid="stRadio"] label, 
-        div[data-baseweb="select"] span {
-            color: #e6edf3 !important;
-        }
+            /* Texto padrão */
+            p, label, span, div {
+                color: #f0f0f0 !important;
+                font-size: 16px;
+            }
 
-        /* Inputs e caixas */
-        .stTextInput > div > div > input,
-        .stSelectbox > div > div,
-        .stTextArea > div > div > textarea {
-            background-color: #21262d !important;
-            color: #f0f0f0 !important;
-            border: 1px solid #30363d !important;
-            border-radius: 5px !important;
-        }
+            /* Tabelas */
+            .dataframe {
+                background-color: #161b22 !important;
+                color: #f0f0f0 !important;
+                border-radius: 10px;
+            }
 
-        /* Separadores */
-        hr {
-            border: 1px solid #30363d !important;
-        }
+            /* Botões */
+            div.stDownloadButton > button,
+            div.stButton > button {
+                background-color: #238636 !important;
+                color: white !important;
+                border-radius: 8px !important;
+                border: 1px solid #2ea043 !important;
+                padding: 0.6em 1.2em !important;
+                font-weight: 600;
+                font-size: 16px;
+            }
 
-        /* Métricas */
-        div[data-testid="stMetricValue"] {
-            color: #79c0ff !important;
-        }
+            div.stDownloadButton > button:hover,
+            div.stButton > button:hover {
+                background-color: #2ea043 !important;
+            }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0d1117;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #30363d;
-            border-radius: 4px;
-        }
-    </style>
-""", unsafe_allow_html=True)
+            /* Radio e Selectbox */
+            div[data-testid="stRadio"] label, 
+            div[data-baseweb="select"] span {
+                color: #e6edf3 !important;
+                font-size: 16px;
+            }
+
+            /* Inputs e caixas */
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div,
+            .stTextArea > div > div > textarea {
+                background-color: #21262d !important;
+                color: #f0f0f0 !important;
+                border: 1px solid #30363d !important;
+                border-radius: 5px !important;
+                font-size: 16px;
+            }
+
+            /* Separadores */
+            hr {
+                border: 1px solid #30363d !important;
+            }
+
+            /* Métricas */
+            div[data-testid="stMetricValue"] {
+                color: #79c0ff !important;
+                font-size: 1.8em !important;
+            }
+
+            /* Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #0d1117;
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: #30363d;
+                border-radius: 4px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <style>
+            /* Fundo geral */
+            .stApp {
+                background-color: #ffffff;
+                color: #262730;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 16px;
+            }
+
+            /* Sidebar */
+            section[data-testid="stSidebar"] {
+                background-color: #f0f2f6 !important;
+                border-right: 1px solid #d0d0d0;
+            }
+
+            /* Títulos */
+            h1, h2, h3, h4 {
+                color: #1f3a60 !important;
+                font-size: 1.8em !important;
+            }
+
+            h2 {
+                font-size: 1.6em !important;
+            }
+
+            h3 {
+                font-size: 1.4em !important;
+            }
+
+            /* Texto padrão */
+            p, label, span, div {
+                color: #262730 !important;
+                font-size: 16px;
+            }
+
+            /* Tabelas */
+            .dataframe {
+                background-color: #ffffff !important;
+                color: #262730 !important;
+                border-radius: 10px;
+            }
+
+            /* Botões */
+            div.stDownloadButton > button,
+            div.stButton > button {
+                background-color: #1f3a60 !important;
+                color: white !important;
+                border-radius: 8px !important;
+                border: 1px solid #2c5282 !important;
+                padding: 0.6em 1.2em !important;
+                font-weight: 600;
+                font-size: 16px;
+            }
+
+            div.stDownloadButton > button:hover,
+            div.stButton > button:hover {
+                background-color: #2c5282 !important;
+            }
+
+            /* Radio e Selectbox */
+            div[data-testid="stRadio"] label, 
+            div[data-baseweb="select"] span {
+                color: #262730 !important;
+                font-size: 16px;
+            }
+
+            /* Inputs e caixas */
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div,
+            .stTextArea > div > div > textarea {
+                background-color: #ffffff !important;
+                color: #262730 !important;
+                border: 1px solid #d0d0d0 !important;
+                border-radius: 5px !important;
+                font-size: 16px;
+            }
+
+            /* Separadores */
+            hr {
+                border: 1px solid #d0d0d0 !important;
+            }
+
+            /* Métricas */
+            div[data-testid="stMetricValue"] {
+                color: #1f3a60 !important;
+                font-size: 1.8em !important;
+            }
+
+            /* Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f0f2f6;
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: #c0c0c0;
+                border-radius: 4px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
 # --- FUNÇÃO PARA CARREGAR DADOS ---
 @st.cache_data(ttl=120)
@@ -115,32 +244,24 @@ def carregar_dados():
         df = pd.read_csv(url)
         df.columns = df.columns.str.strip().str.lower()
         
-        # REMOÇÃO DO ID E DA COLUNA DE DATA/HORA ADICIONADA:
-        # Removendo a linha abaixo para não inserir mais o "id"
-        # df.insert(0, "id", range(1, len(df) + 1))
-        
-        # AQUI VAMOS APENAS GARANTIR QUE SE HOUVER UMA COLUNA DE DATA/HORA, ELA SE CHAME data_hora_registro 
-        # MAS NÃO VAMOS ADICIONAR UMA NOVA SE ELA JÁ EXISTIR (APENAS RENOMEAR A EXISTENTE SE NECESSÁRIO)
         data_hora_col = next((c for c in df.columns if "hora" in c or "timestamp" in c), None)
         if data_hora_col:
             df.rename(columns={data_hora_col: "data_hora_registro"}, inplace=True)
-        # Se não houver, não faremos nada, focando apenas nos dados de resposta.
 
         return df
     except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
+        st.error(f"Erro ao carregar dados: {e}")
         return pd.DataFrame()
 
 # --- FUNÇÃO AUXILIAR PARA OBTER COLUNAS DE PERFIL (EXCLUINDO ID E DATA/HORA) ---
 def get_colunas_de_analise(df):
     """Retorna as colunas que devem ser usadas para filtro e estatísticas, 
     excluindo aquelas que são identificadores ou de controle."""
-    # Lista de termos a serem ignorados para filtro/estatísticas
     termos_ignorar = ("em", "qual", "que", "você", "voce", "hora", "timestamp", "data_hora_registro", "id")
     
     colunas_de_analise = [
         col for col in df.columns
-        if len(col.split()) <= 5 # Critério de nome curto
+        if len(col.split()) <= 5
         and not col.startswith(termos_ignorar)
     ]
     return colunas_de_analise
@@ -152,19 +273,16 @@ def gerar_pdf_por_campo(df):
     estilos = getSampleStyleSheet()
     elementos = []
 
-    # Título do PDF alterado para refletir a ausência de ID
-    titulo = Paragraph("<b>🧠 Mente Digital - Relatório de Respostas (por campo - Sem Identificadores)</b>", estilos['Title'])
+    titulo = Paragraph("<b>Mente Digital - Relatório de Respostas (por campo - Sem Identificadores)</b>", estilos['Title'])
     data_geracao = Paragraph(f"Geração: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", estilos['Normal'])
     elementos.extend([titulo, data_geracao, Spacer(1, 12)])
 
-    # Usando a nova função auxiliar para obter as colunas sem ID/Data
     colunas_perfil = get_colunas_de_analise(df)
 
     for i, col in enumerate(colunas_perfil):
         elementos.append(Paragraph(f"<b>{col.capitalize()}</b>", estilos['Heading2']))
         elementos.append(Spacer(1, 8))
         
-        # AQUI É O AJUSTE PRINCIPAL: a lista 'campos' agora só contém a coluna de interesse.
         campos = [col] 
         dados_coluna = df[campos].copy()
         dados = [dados_coluna.columns.tolist()] + dados_coluna.values.tolist()
@@ -190,17 +308,24 @@ def gerar_pdf_por_campo(df):
     return pdf
 
 # --- SIDEBAR ---
-st.sidebar.title("🧭 Navegação")
+st.sidebar.title("Navegação")
+
+# Botão para alternar tema
+tema_atual = "Claro" if st.session_state.tema == "escuro" else "Escuro"
+if st.sidebar.button(f"Modo {tema_atual}"):
+    alternar_tema()
+    st.rerun()
+
 menu = st.sidebar.radio(
     "Escolha uma seção:",
-    ["📊 Visão Geral", "🔍 Filtrar Dados", "📈 Estatísticas", "🧾 Ver Dados Brutos"]
+    ["Visão Geral", "Filtrar Dados", "Estatísticas", "Ver Dados Brutos"]
 )
 st.sidebar.markdown("---")
-st.sidebar.caption("🔄 Atualiza automaticamente a cada 2 minutos.")
+st.sidebar.caption("Atualiza automaticamente a cada 2 minutos.")
 
 # --- CONTEÚDO PRINCIPAL ---
-st.title("🧠 Mente Digital - Dashboard de Respostas")
-st.markdown("Explore os dados do Forms com uma interface moderna e escura 🌙")
+st.title("Mente Digital - Dashboard de Respostas")
+st.markdown("Explore os dados do Forms com uma interface moderna")
 st.divider()
 
 df = carregar_dados()
@@ -209,35 +334,33 @@ df = carregar_dados()
 colunas_analise_filtro = [col for col in df.columns if col not in ("data_hora_registro", "id")]
 
 if df.empty:
-    st.warning("⚠️ Nenhum dado disponível no momento.")
+    st.warning("Nenhum dado disponível no momento.")
 else:
-    if menu == "📊 Visão Geral":
-        st.subheader("📋 Resumo dos Dados")
+    if menu == "Visão Geral":
+        st.subheader("Resumo dos Dados")
         with st.container():
             st.metric(label="Total de Respostas", value=len(df))
             st.dataframe(df.head(), use_container_width=True)
 
-    elif menu == "🔍 Filtrar Dados":
-        st.subheader("🎯 Filtrar Dados Interativamente")
+    elif menu == "Filtrar Dados":
+        st.subheader("Filtrar Dados Interativamente")
         st.markdown("Escolha uma coluna e um valor específico para visualizar apenas os registros correspondentes.")
         st.divider()
 
-        # AJUSTE: Usando as colunas filtradas, sem ID e data_hora_registro.
         if not colunas_analise_filtro:
             st.warning("Nenhuma coluna disponível para filtro após a remoção dos identificadores.")
         else:
-            coluna = st.selectbox("📌 Escolha a coluna:", colunas_analise_filtro)
+            coluna = st.selectbox("Escolha a coluna:", colunas_analise_filtro)
             valores_unicos = df[coluna].dropna().unique().tolist()
-            valor = st.selectbox("🎯 Escolha o valor:", valores_unicos)
+            valor = st.selectbox("Escolha o valor:", valores_unicos)
 
             filtrado = df[df[coluna] == valor]
             st.success(f"{len(filtrado)} registros encontrados.")
             st.dataframe(filtrado, use_container_width=True)
 
-    elif menu == "📈 Estatísticas":
-        st.subheader("📊 Estatísticas Automáticas (dados pessoais)")
+    elif menu == "Estatísticas":
+        st.subheader("Estatísticas Automáticas (dados pessoais)")
         
-        # AJUSTE: Usando a nova função auxiliar para obter as colunas de perfil
         colunas_perfil = get_colunas_de_analise(df)
         
         if not colunas_perfil:
@@ -245,7 +368,7 @@ else:
         else:
             for col in colunas_perfil:
                 contagem = df[col].value_counts(dropna=True)
-                st.markdown(f"#### 📍 {col.capitalize()}")
+                st.markdown(f"#### {col.capitalize()}")
                 col1, col2 = st.columns(2)
                 with col1:
                     st.bar_chart(contagem)
@@ -253,10 +376,9 @@ else:
                     st.write(contagem)
                 st.divider()
 
-    elif menu == "🧾 Ver Dados Brutos":
-        st.subheader("📑 Todos os Dados Coletados")
+    elif menu == "Ver Dados Brutos":
+        st.subheader("Todos os Dados Coletados")
         
-        # AJUSTE: Exibindo o DataFrame sem as colunas de controle (se existirem)
         df_display = df.copy()
         if "data_hora_registro" in df_display.columns:
             df_display.drop(columns=["data_hora_registro"], inplace=True)
@@ -266,8 +388,7 @@ else:
         
         pdf = gerar_pdf_por_campo(df)
         st.download_button(
-            # Rótulo do botão alterado
-            label="📄 Baixar Relatório PDF (Sem Identificadores)",
+            label="Baixar Relatório PDF (Sem Identificadores)",
             data=pdf,
             file_name='respostas_anonimas.pdf',
             mime='application/pdf'
