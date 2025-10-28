@@ -485,7 +485,7 @@ elif menu == "Consultar Dados":
     
     st.markdown("---")
 
-    st.subheader("DADOS GERAIS")
+    st.subheader("Dados Gerais")
     
     df_display = df_limpo.drop(columns=["data_hora_registro"], errors="ignore").copy()
     st.dataframe(df_display, use_container_width=True)
