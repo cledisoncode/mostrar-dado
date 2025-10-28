@@ -498,13 +498,12 @@ elif menu == "Consultar Dados":
     st.download_button(
         "Baixar (PDF)", 
         pdf, 
-        f"resumo_respostas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf", 
+        f"resumo_em_grafico_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf", 
         "application/pdf", 
         key='download_pdf_brutos'
     )
 
 
-# --- ESTATÍSTICAS ---
 # --- ESTATÍSTICAS ---
 elif menu == "Estatísticas":
     st.subheader("Estatísticas por Campo de Perfil")
