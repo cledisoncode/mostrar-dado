@@ -11,8 +11,7 @@ from reportlab.platypus import (
     Paragraph, Spacer, PageBreak
 )
 import numpy as np
-import matplotlib.pyplot as plt
-from streamlit.components.v1 import html as st_html
+import matplotlib.pyplot as plt  # Adicionado para gráficos de pizza
 
 # --- CONFIGURAÇÃO GERAL ---
 st.set_page_config(
@@ -35,20 +34,28 @@ if st.session_state.tema == "escuro":
     destaque = "#58a6ff"
     cor_botao = "#238636"
     cor_hover = "#2ea043"
-    cor_sidebar = "#161b22"
+    cor_tabela_fundo = "#161b22"
     cor_tabela_borda = "#30363d"
+    cor_sidebar = "#161b22"
+    cor_scroll = "#30363d"
+    cor_divisoria = "#ffffff"
     sidebar_text_color = texto
+    metric_label_color = texto
 else:
     fundo = "#f3f4f6"
     texto = "#0a0a0a"
     destaque = "#0b4dd8"
     cor_botao = "#1d4ed8"
     cor_hover = "#0b3ea9"
-    cor_sidebar = "#f9fafb"
-    cor_tabela_borda = "#d1d5db"
+    cor_tabela_fundo = "#f9fafb"
+    cor_tabela_borda = "#000000C3"
+    cor_sidebar = "#f3f4f6"
+    cor_scroll = "#475569"
+    cor_divisoria = "#1e293b"
     sidebar_text_color = "#000000"
+    metric_label_color = "#000000"
 
-# --- CSS GLOBAL ---
+# --- ESTILO GLOBAL ---
 st.markdown(f"""
     <style>
         .stApp {{
@@ -60,92 +67,116 @@ st.markdown(f"""
         section[data-testid="stSidebar"] {{
             background-color: {cor_sidebar} !important;
             color: {sidebar_text_color} !important;
+            overflow-y: hidden !important;
             border-right: 2px solid {cor_tabela_borda} !important;
         }}
-        h1, h2, h3 {{
+        section[data-testid="stSidebar"] * {{
+            font-size: 21.5px !important;
+            font-weight: 700 !important;
+        }}
+        section[data-testid="stSidebar"] label p,
+        section[data-testid="stSidebar"] div[role="radiogroup"] label span {{
+            color: {sidebar_text_color} !important;
+        }}
+        h1, h2, h3, h4 {{
             color: {destaque} !important;
             font-weight: 700 !important;
+        }}
+        h2 {{
+            font-size: 2.4em !important;  /* Aumenta o subheader */
+            font-family: 'Segoe UI', sans-serif !important;  /* Mantém estilo profissional */
+            letter-spacing: 0.5px !important;  /* Pequeno espaçamento entre letras */
         }}
         div.stButton > button {{
             background-color: {cor_botao} !important;
             color: white !important;
             border-radius: 10px !important;
+            border: 2px solid {cor_botao} !important;
             padding: 0.5em 1.2em !important;
             font-weight: 600 !important;
+            font-size: 16px !important;
         }}
         div.stButton > button:hover {{
             background-color: {cor_hover} !important;
+            border-color: {cor_hover} !important;
+            transform: translateY(-1px) !important;
         }}
+        .stDataFrame {{
+            font-size: 17px !important;
+            color: {texto} !important;
+            background-color: {cor_tabela_fundo} !important;
+            border: 2px solid {cor_tabela_borda} !important;
+            border-radius: 8px !important;
+        }}
+        div[data-testid="stMetricValue"] {{
+            font-size: 1.5em !important;
+            font-weight: 800 !important;
+            color: {destaque} !important;
+        }}
+        div[data-testid="stMetricLabel"] p {{
+            font-size: 1.1em !important; 
+            font-weight: 600 !important;
+            color: {metric_label_color} !important;
+        }}
+        [data-testid="stSelectbox"] label p {{
+            font-size: 1.2em !important;
+            font-weight: 600 !important;
+            color: {texto} !important;
+        }}
+        h1 {{ font-size: 2.8em !important; }}
+        h2 {{ font-size: 2.2em !important; }}
+        h3 {{ font-size: 1.5em !important; }}
+        ::-webkit-scrollbar {{
+            width: 10px !important;
+        }}
+
+        
+        ::-webkit-scrollbar-thumb {{
+            background-color: {cor_scroll} !important;
+            border-radius: 6px !important;
+            border: 2px solid {fundo} !important;
+        }}
+        ::-webkit-scrollbar-track {{
+            background-color: {cor_sidebar} !important;
+        }}
+        hr {{
+            border: 2px solid {cor_divisoria} !important;
+            opacity: 1 !important;
+            margin: 1.5rem 0 !important;
+        }}
+        div.stDownloadButton > button {{
+            background-color: #16a34a !important;
+            color: white !important;
+            border: 2px solid #16a34a !important;
+            border-radius: 10px !important;
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            padding: 0.6em 1.4em !important;
+            transition: all 0.2s ease-in-out !important;
+        }}
+        div.stDownloadButton > button:hover {{
+            background-color: #22c55e!important;
+            border-color: #22c55e !important;
+            transform: translateY(-2px) !important;
+        }}
+        /* --- Ícone de alternância de tema --- */
+        .theme-toggle {{
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 30px;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }}
+        .theme-toggle:hover {{
+            transform: scale(1.2);
+            filter: brightness(1.3);
+        }}
+        
     </style>
 """, unsafe_allow_html=True)
-
-# --- FUNÇÃO DE ESTILO DAS TABELAS ---
-def aplicar_estilo_tabela(df):
-    """Retorna o DataFrame com estilo base conforme tema."""
-    if st.session_state.tema == "escuro":
-        cor_fundo = "#161b22"
-        cor_texto = "#f0f0f0"
-        cor_header = "#0d1117"
-        cor_borda = "#30363d"
-    else:
-        cor_fundo = "#f9fafb"
-        cor_texto = "#0a0a0a"
-        cor_header = "#e5e7eb"
-        cor_borda = "#d1d5db"
-
-    estilo = df.style.set_table_styles([
-        {'selector': 'thead th',
-         'props': [('background-color', cor_header),
-                   ('color', cor_texto),
-                   ('font-weight', 'bold'),
-                   ('border', f'1px solid {cor_borda}')]}])
-    return estilo
-
-# --- NOVA FUNÇÃO PARA RENDERIZAR TABELAS (DARK/LIGHT FUNCIONAL) ---
-def render_styled_table(df, height=420, hide_index=True):
-    """Renderiza DataFrame com tema respeitando fundo escuro ou claro."""
-    styler = aplicar_estilo_tabela(df)
-    if hide_index:
-        try:
-            styler = styler.hide_index()
-        except Exception:
-            pass
-
-    html_table = styler.to_html()
-
-    if st.session_state.tema == "escuro":
-        _fundo = "#161b22"
-        _header = "#0d1117"
-        _texto = "#f0f0f0"
-        _borda = "#30363d"
-    else:
-        _fundo = "#f9fafb"
-        _header = "#e5e7eb"
-        _texto = "#0a0a0a"
-        _borda = "#d1d5db"
-
-    wrapper = f"""
-    <div style="background:{_fundo}; padding:8px; border-radius:10px; border:1px solid {_borda}; overflow:auto;">
-      {html_table}
-    </div>
-    <style>
-      .dataframe thead th {{
-        background: {_header} !important;
-        color: {_texto} !important;
-        border: 1px solid {_borda} !important;
-        font-weight: 700 !important;
-      }}
-      .dataframe tbody td {{
-        background: {_fundo} !important;
-        color: {_texto} !important;
-        border: 1px solid {_borda} !important;
-        padding: 8px !important;
-      }}
-      .dataframe {{ width:100% !important; border-collapse: collapse !important; }}
-    </style>
-    """
-    st_html(wrapper, height=height, scrolling=True)
-
 
 # --- FUNÇÕES AUXILIARES ---
 def limpar_texto(texto):
@@ -180,37 +211,6 @@ def carregar_dados():
         st.error(f"Erro ao carregar dados: {e}")
         return pd.DataFrame()
 
-
-# --- FUNÇÃO PARA ESTILIZAR TABELAS CONFORME O TEMA ---
-def aplicar_estilo_tabela(df):
-    """Retorna o DataFrame com estilo adaptado ao tema atual."""
-    if st.session_state.tema == "escuro":
-        cor_fundo = "#161b22"
-        cor_texto = "#f0f0f0"
-        cor_header = "#0d1117"
-        cor_borda = "#30363d"
-    else:
-        cor_fundo = "#f9fafb"
-        cor_texto = "#0a0a0a"
-        cor_header = "#e5e7eb"
-        cor_borda = "#d1d5db"
-
-    estilo = df.style.set_table_styles([
-        {'selector': 'thead th',
-         'props': [('background-color', cor_header),
-                   ('color', cor_texto),
-                   ('font-weight', 'bold'),
-                   ('border', f'1px solid {cor_borda}')]},
-        {'selector': 'tbody td',
-         'props': [('background-color', cor_fundo),
-                   ('color', cor_texto),
-                   ('border', f'1px solid {cor_borda}')]}
-    ]).set_properties(**{
-        'text-align': 'center',
-        'border-color': cor_borda
-    })
-
-    return estilo
 
 def gerar_pdf_resumo(df):
     from reportlab.platypus import Image, KeepTogether
@@ -718,3 +718,7 @@ elif menu == "Estatísticas":
             else:
                 st.info("Nenhum dado válido para esta coluna.")
             st.divider()
+
+     
+
+                      
